@@ -1,6 +1,5 @@
 package com.samuel.loja.entities;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
@@ -14,9 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity(name = "tb_category")
-public class Category implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class Category {
+    
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(generator = "UUID")
