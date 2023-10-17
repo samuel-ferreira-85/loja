@@ -5,12 +5,14 @@ import java.util.UUID;
 import com.samuel.loja.entities.Category;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class CategoryDto {
        
     private UUID id;

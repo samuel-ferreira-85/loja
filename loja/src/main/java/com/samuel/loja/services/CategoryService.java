@@ -37,4 +37,12 @@ public class CategoryService {
 
         return new CategoryDto(category);
     }
+
+    public CategoryDto insert(CategoryDto categoryDto) {
+        var category = Category.builder().name(categoryDto.getName()).build();
+
+        Category categorySaved = categoryRepository.save(category);
+
+        return new CategoryDto(categorySaved);
+    }
 }
