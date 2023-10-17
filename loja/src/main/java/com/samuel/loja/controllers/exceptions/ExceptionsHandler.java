@@ -10,6 +10,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import com.samuel.loja.services.exceptions.DataBaseException;
 import com.samuel.loja.services.exceptions.ResourceNotFoundException;
 
 @ControllerAdvice
@@ -29,11 +31,27 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<StandardError> handleInvalidUUIDException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
+        var status = HttpStatus.NOT_FOUND;
+
         var error = StandardError.builder()
             .timestamp(Instant.now())
-            .status(HttpStatus.NOT_FOUND.value())
+            .status(status.value())
             .error("Not found.")
             .message("Não há recurso para o ID informado.")
+            .path(request.getRequestURI())
+            .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(DataBaseException.class)
+    public ResponseEntity<StandardError> handleDataIntegrityViolationException(DataBaseException e, HttpServletRequest request) {
+        var status = HttpStatus.BAD_REQUEST;
+
+        var error = StandardError.builder()
+            .timestamp(Instant.now())
+            .status(status.value())
+            .error("Database exception.")
+            .message(e.getMessage())
             .path(request.getRequestURI())
             .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);

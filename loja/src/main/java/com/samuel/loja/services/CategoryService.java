@@ -6,12 +6,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.samuel.loja.dto.CategoryDto;
 import com.samuel.loja.entities.Category;
 import com.samuel.loja.repository.ICategoryRepository;
+import com.samuel.loja.services.exceptions.DataBaseException;
 import com.samuel.loja.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -56,5 +58,15 @@ public class CategoryService {
     public Category getCategory(UUID id) {
         return categoryRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Não há recurso para o id: " + id));
+    }
+
+    public void delete(UUID id) {        
+        
+        try {
+            Category category = getCategory(id);
+            categoryRepository.delete(category);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataBaseException("Integrity violation.");
+        } 
     }
 }
