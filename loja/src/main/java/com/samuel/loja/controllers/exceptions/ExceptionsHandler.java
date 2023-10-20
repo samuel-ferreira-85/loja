@@ -19,14 +19,15 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<StandardError> entityNotFoundException(ResourceNotFoundException e, HttpServletRequest request) {
+        var status = HttpStatus.NOT_FOUND;
         var error = StandardError.builder()
             .timestamp(Instant.now())
-            .status(HttpStatus.NOT_FOUND.value())
+            .status(status.value())
             .error("Resource not found.")
             .message(e.getMessage())
             .path(request.getRequestURI())
             .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -40,7 +41,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
             .message("Não há recurso para o ID informado.")
             .path(request.getRequestURI())
             .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(DataBaseException.class)
@@ -54,7 +55,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
             .message(e.getMessage())
             .path(request.getRequestURI())
             .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return ResponseEntity.status(status).body(error);
     }
     
 }

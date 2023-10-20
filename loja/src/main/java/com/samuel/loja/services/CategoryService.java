@@ -1,12 +1,12 @@
 package com.samuel.loja.services;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.time.Instant;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,18 +20,17 @@ import com.samuel.loja.services.exceptions.ResourceNotFoundException;
 public class CategoryService {
     
     @Autowired
-    private ICategoryRepository categoryRepository;
+    private ICategoryRepository repository;
 
     @Transactional(readOnly = true)
-    public List<CategoryDto> findAll() {
-        List<Category> list = categoryRepository.findAll();
+    public Page<CategoryDto> findAllPaged(PageRequest pageRequest) {
+        Page<Category> list = repository.findAll(pageRequest);
 
-        return list.stream().map(c -> new CategoryDto(c))
-            .collect(Collectors.toList());
+        return list.map(c -> new CategoryDto(c));
     }
 
     @Transactional(readOnly = true)
-    public CategoryDto findById(UUID id) {
+    public CategoryDto findById(Long id) {
         Category category = getCategory(id);
 
         return new CategoryDto(category);
@@ -39,15 +38,18 @@ public class CategoryService {
 
     @Transactional
     public CategoryDto insert(CategoryDto categoryDto) {
-        var category = Category.builder().name(categoryDto.getName()).build();
+        var category = Category.builder()
+            .name(categoryDto.getName())
+            .createdAt(Instant.now())
+            .build();
 
-        Category categorySaved = categoryRepository.save(category);
+        Category categorySaved = repository.save(category);
 
         return new CategoryDto(categorySaved);
     }
 
     @Transactional
-    public CategoryDto update(UUID id, CategoryDto categoryDto) {
+    public CategoryDto update(Long id, CategoryDto categoryDto) {
         Category category = getCategory(id);
 
         BeanUtils.copyProperties(categoryDto, category, "id");
@@ -55,16 +57,16 @@ public class CategoryService {
         return new CategoryDto(category);
     }
 
-    public Category getCategory(UUID id) {
-        return categoryRepository.findById(id)
+    public Category getCategory(Long id) {
+        return repository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Não há recurso para o id: " + id));
     }
 
-    public void delete(UUID id) {        
+    public void delete(Long id) {        
         
         try {
             Category category = getCategory(id);
-            categoryRepository.delete(category);
+            repository.delete(category);
         } catch (DataIntegrityViolationException e) {
             throw new DataBaseException("Integrity violation.");
         } 

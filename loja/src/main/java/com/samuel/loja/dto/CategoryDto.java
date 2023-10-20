@@ -1,7 +1,5 @@
 package com.samuel.loja.dto;
 
-import java.util.UUID;
-
 import com.samuel.loja.entities.Category;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +13,7 @@ import lombok.Setter;
 @Builder
 public class CategoryDto {
        
-    private UUID id;
+    private Long id;
     private String name;
 
     public CategoryDto(Category category) {

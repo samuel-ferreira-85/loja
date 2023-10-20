@@ -18,18 +18,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.samuel.loja.dto.CategoryDto;
-import com.samuel.loja.services.CategoryService;
+import com.samuel.loja.dto.ProductDto;
+import com.samuel.loja.services.ProductService;
 
 @RestController
-@RequestMapping("/categories")
-public class CategoryController {
+@RequestMapping("/products")
+public class ProductController {
 
     @Autowired
-    private CategoryService categoryService;
+    private ProductService productService;
     
     @GetMapping
-    public ResponseEntity<Page<CategoryDto>> findAll(
+    public ResponseEntity<Page<ProductDto>> findAll(
         @RequestParam(value = "page", defaultValue = "0") Integer page,
         @RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
         @RequestParam(value = "direction", defaultValue = "ASC") String direction,
@@ -39,21 +39,21 @@ public class CategoryController {
 
 
 
-        Page<CategoryDto> list = categoryService.findAllPaged(pageRequest);
+        Page<ProductDto> list = productService.findAllPaged(pageRequest);
 
         return ResponseEntity.ok().body(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto> findById(@PathVariable Long id) {
-        CategoryDto category = categoryService.findById(id);
+    public ResponseEntity<ProductDto> findById(@PathVariable Long id) {
+        ProductDto product = productService.findById(id);
 
-        return ResponseEntity.ok().body(category);
+        return ResponseEntity.ok().body(product);
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDto> insert(@RequestBody CategoryDto categoryDto) {
-        var dto = categoryService.insert(categoryDto);
+    public ResponseEntity<ProductDto> insert(@RequestBody ProductDto productDto) {
+        var dto = productService.insert(productDto);
 
         URI uri = ServletUriComponentsBuilder
             .fromCurrentContextPath().path("/{id}")
@@ -64,16 +64,16 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDto> update(@PathVariable Long id, 
-        @RequestBody CategoryDto categoryDto) {
-        CategoryDto dto = categoryService.update(id, categoryDto);
+    public ResponseEntity<ProductDto> update(@PathVariable Long id, 
+        @RequestBody ProductDto productDto) {
+        ProductDto dto = productService.update(id, productDto);
 
         return ResponseEntity.ok().body(dto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        categoryService.delete(id);
+        productService.delete(id);
 
         return ResponseEntity.noContent().build();
     }
