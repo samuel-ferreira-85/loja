@@ -3,6 +3,7 @@ package com.samuel.loja.services;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -61,12 +62,14 @@ public class ProductService {
     }
 
     public void delete(Long id) {        
-        
         try {
-            Product product = getProduct(id);
-            repository.delete(product);
+            repository.deleteById(id);
+//            Product product = getProduct(id);
+//            repository.delete(product);
+        } catch (EmptyResultDataAccessException e) {
+            throw new DataBaseException("Resource not found.");
         } catch (DataIntegrityViolationException e) {
             throw new DataBaseException("Integrity violation.");
-        } 
+        }
     }
 }
