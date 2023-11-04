@@ -61,13 +61,13 @@ public class ProductService {
             .orElseThrow(() -> new ResourceNotFoundException("Não há recurso para o id: " + id));
     }
 
-    public void delete(Long id) {        
+    public void delete(Long id) {
         try {
-            repository.deleteById(id);
-//            Product product = getProduct(id);
-//            repository.delete(product);
-        } catch (EmptyResultDataAccessException e) {
-            throw new DataBaseException("Resource not found.");
+            if (repository.existsById(id)) {
+                repository.deleteById(id);
+            } else {
+                throw new ResourceNotFoundException("Resource not found.");
+            }
         } catch (DataIntegrityViolationException e) {
             throw new DataBaseException("Integrity violation.");
         }

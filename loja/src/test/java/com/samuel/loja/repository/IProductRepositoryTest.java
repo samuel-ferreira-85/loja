@@ -1,6 +1,7 @@
 package com.samuel.loja.repository;
 
 import com.samuel.loja.entities.Product;
+import com.samuel.loja.services.exceptions.ResourceNotFoundException;
 import com.samuel.loja.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +64,7 @@ class IProductRepositoryTest {
 //    deleteById(id) - com um Id que não existe não lança exceção nas atualizações
 //    @Test
 //    void deleteShouldThrowEmptyResultDataAccessExceptionWhenIdDoesNotExist() {
-//        assertThrows(IllegalArgumentException.class, () -> {
+//        assertThrows(ResourceNotFoundException.class, () -> {
 //            productRepository.deleteById(nonExistingId);
 //        });
 //    }
