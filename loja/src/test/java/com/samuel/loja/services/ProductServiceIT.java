@@ -1,7 +1,7 @@
 package com.samuel.loja.services;
 
 import com.samuel.loja.dto.ProductDto;
-import com.samuel.loja.repository.IProductRepository;
+import com.samuel.loja.repository.ProductRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.samuel.loja.services.exceptions.ResourceNotFoundException;
@@ -22,7 +22,7 @@ public class ProductServiceIT {
     private ProductService productService;
 
     @Autowired
-    private IProductRepository productRepository;
+    private ProductRepository productRepository;
 
     private Long existingId;
     private Long nonExistingId;

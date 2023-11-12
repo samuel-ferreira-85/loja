@@ -3,7 +3,6 @@ package com.samuel.loja.services;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.samuel.loja.dto.ProductDto;
 import com.samuel.loja.entities.Product;
-import com.samuel.loja.repository.IProductRepository;
+import com.samuel.loja.repository.ProductRepository;
 import com.samuel.loja.services.exceptions.DataBaseException;
 import com.samuel.loja.services.exceptions.ResourceNotFoundException;
 
@@ -19,7 +18,7 @@ import com.samuel.loja.services.exceptions.ResourceNotFoundException;
 public class ProductService {
     
     @Autowired
-    private IProductRepository repository;
+    private ProductRepository repository;
 
     @Transactional(readOnly = true)
     public Page<ProductDto> findAllPaged(PageRequest pageRequest) {

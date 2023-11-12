@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.samuel.loja.dto.CategoryDto;
 import com.samuel.loja.entities.Category;
-import com.samuel.loja.repository.ICategoryRepository;
+import com.samuel.loja.repository.CategoryRepository;
 import com.samuel.loja.services.exceptions.DataBaseException;
 import com.samuel.loja.services.exceptions.ResourceNotFoundException;
 
@@ -20,7 +20,7 @@ import com.samuel.loja.services.exceptions.ResourceNotFoundException;
 public class CategoryService {
     
     @Autowired
-    private ICategoryRepository repository;
+    private CategoryRepository repository;
 
     @Transactional(readOnly = true)
     public Page<CategoryDto> findAllPaged(PageRequest pageRequest) {

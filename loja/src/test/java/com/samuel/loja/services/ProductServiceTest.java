@@ -2,7 +2,7 @@ package com.samuel.loja.services;
 
 import com.samuel.loja.dto.ProductDto;
 import com.samuel.loja.entities.Product;
-import com.samuel.loja.repository.IProductRepository;
+import com.samuel.loja.repository.ProductRepository;
 import com.samuel.loja.services.exceptions.DataBaseException;
 import com.samuel.loja.services.exceptions.ResourceNotFoundException;
 import com.samuel.loja.tests.Factory;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.*;
@@ -31,7 +30,7 @@ class ProductServiceTest {
     private ProductService productService;
 
     @Mock
-    private IProductRepository productRepository;
+    private ProductRepository productRepository;
 
     private long existingId;
     private long nonExistingID;
