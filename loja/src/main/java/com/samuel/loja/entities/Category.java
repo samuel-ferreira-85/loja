@@ -1,13 +1,10 @@
 package com.samuel.loja.entities;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,13 +29,24 @@ public class Category {
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant createdAt;
 
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant updatedAt;
+
+    @ManyToMany(mappedBy = "categories")
+    private Set<Product> products = new HashSet<>();
+
     public Category(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
     @PrePersist
-	public void prePersist() {
-		createdAt = Instant.now();
-	}
+    public void prePersist() {
+        createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = Instant.now();
+    }
 }
