@@ -1,17 +1,18 @@
 package com.samuel.loja.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter @Setter
-@NoArgsConstructor
 public class UserInsertDTO extends UserDto {
 
     private String password;
 
-    public UserInsertDTO(String password) {
+    public UserInsertDTO() {
         super();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
     }
 }

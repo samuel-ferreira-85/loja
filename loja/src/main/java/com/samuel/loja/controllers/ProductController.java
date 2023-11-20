@@ -1,25 +1,19 @@
 package com.samuel.loja.controllers;
 
-import java.net.URI;
-
+import com.samuel.loja.dto.ProductDto;
+import com.samuel.loja.dto.ProductListDto;
+import com.samuel.loja.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.samuel.loja.dto.ProductDto;
-import com.samuel.loja.services.ProductService;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/products")
@@ -29,7 +23,7 @@ public class ProductController {
     private ProductService productService;
     
     @GetMapping
-    public ResponseEntity<Page<ProductDto>> findAll(
+    public ResponseEntity<Page<ProductListDto>> findAll(
         @RequestParam(value = "page", defaultValue = "0") Integer page,
         @RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
         @RequestParam(value = "direction", defaultValue = "ASC") String direction,
@@ -39,11 +33,12 @@ public class ProductController {
 
 
 
-        Page<ProductDto> list = productService.findAllPaged(pageRequest);
+        Page<ProductListDto> list = productService.findAllPaged(pageRequest);
 
         return ResponseEntity.ok().body(list);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> findById(@PathVariable Long id) {
         ProductDto product = productService.findById(id);
@@ -51,8 +46,9 @@ public class ProductController {
         return ResponseEntity.ok().body(product);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<ProductDto> insert(@RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> insert(@Valid @RequestBody ProductDto productDto) {
         var dto = productService.insert(productDto);
 
         URI uri = ServletUriComponentsBuilder
@@ -63,6 +59,7 @@ public class ProductController {
         return ResponseEntity.created(uri).body(dto);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ProductDto> update(@PathVariable Long id, 
         @RequestBody ProductDto productDto) {
@@ -71,6 +68,7 @@ public class ProductController {
         return ResponseEntity.ok().body(dto);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);

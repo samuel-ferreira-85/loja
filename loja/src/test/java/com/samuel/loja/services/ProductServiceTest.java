@@ -1,6 +1,7 @@
 package com.samuel.loja.services;
 
 import com.samuel.loja.dto.ProductDto;
+import com.samuel.loja.dto.ProductListDto;
 import com.samuel.loja.entities.Product;
 import com.samuel.loja.repository.ProductRepository;
 import com.samuel.loja.services.exceptions.DataBaseException;
@@ -13,8 +14,10 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -57,9 +60,6 @@ class ProductServiceTest {
         when(productRepository.findById(existingId)).thenReturn(Optional.of(product));
         when(productRepository.findById(nonExistingID)).thenReturn(Optional.empty());
 
-        doNothing().when(productRepository).deleteById(existingId);
-        doThrow(EmptyResultDataAccessException.class).when(productRepository).deleteById(nonExistingID);
-        doThrow(DataIntegrityViolationException.class).when(productRepository).deleteById(dependentID);
     }
 
     @Test
@@ -95,7 +95,7 @@ class ProductServiceTest {
     @Test
     void findAllPagedShouldReturnPage() {
         PageRequest pageable = PageRequest.of(0, 10);
-        Page<ProductDto> result = productService.findAllPaged(pageable);
+        Page<ProductListDto> result = productService.findAllPaged(pageable);
 
         assertNotNull(result);
         verify(productRepository).findAll(pageable);
@@ -104,32 +104,28 @@ class ProductServiceTest {
 
     @Test
     void deleteShouldThrowDataBaseExceptionWhenDependentId() {
-        assertThrows(DataBaseException.class, () -> {
-            productService.delete(dependentID);
-        });
-
-        verify(productRepository, times(1))
-                .deleteById(dependentID);
+        when(productRepository.existsById(dependentID)).thenReturn(true);
+        doThrow(DataIntegrityViolationException.class).when(productRepository).deleteById(dependentID);
+        assertThrows(DataBaseException.class, () -> productService.delete(dependentID));
+        verify(productRepository).deleteById(dependentID);
     }
 
     @Test
     void deleteShouldThrowResourceNotFoundExceptionWhenNonExistingID() {
-        assertThrows(ResourceNotFoundException.class, () -> {
-            productService.delete(nonExistingID);
-        });
+        when(productRepository.existsById(nonExistingID)).thenReturn(false);
 
-        verify(productRepository, times(1))
-                .deleteById(nonExistingID);
+        assertThrows(ResourceNotFoundException.class, () ->
+                productService.delete(nonExistingID));
+
+        verify(productRepository, never()).deleteById(nonExistingID);
     }
 
     @Test
     void deleteShouldDoNothingWhenIdExists() {
-        assertDoesNotThrow(() -> {
-            productService.delete(existingId);
-        });
-
-        verify(productRepository, times(1))
-                .deleteById(existingId);
+        when(productRepository.existsById(existingId)).thenReturn(true);
+        assertDoesNotThrow(() -> productService.delete(existingId));
+        doNothing().when(productRepository).deleteById(existingId);
+        verify(productRepository, times(1)).deleteById(existingId);
     }
 
 }

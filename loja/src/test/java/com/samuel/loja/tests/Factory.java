@@ -1,6 +1,7 @@
 package com.samuel.loja.tests;
 
 import com.samuel.loja.dto.ProductDto;
+import com.samuel.loja.dto.ProductListDto;
 import com.samuel.loja.entities.Category;
 import com.samuel.loja.entities.Product;
 
@@ -19,5 +20,10 @@ public class Factory {
     public static ProductDto createProductDto() {
         Product product = createProduct();
         return new ProductDto(product, product.getCategories());
+    }
+
+    public static ProductListDto createProductListDto() {
+        Product product = createProduct();
+        return new ProductListDto(product);
     }
 }

@@ -1,5 +1,10 @@
 package com.samuel.loja.services;
 
+import com.samuel.loja.dto.CategoryDto;
+import com.samuel.loja.dto.ProductListDto;
+import com.samuel.loja.entities.Category;
+import com.samuel.loja.repository.CategoryRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,17 +19,23 @@ import com.samuel.loja.repository.ProductRepository;
 import com.samuel.loja.services.exceptions.DataBaseException;
 import com.samuel.loja.services.exceptions.ResourceNotFoundException;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
+@Slf4j
 public class ProductService {
     
     @Autowired
     private ProductRepository repository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public Page<ProductDto> findAllPaged(PageRequest pageRequest) {
+    public Page<ProductListDto> findAllPaged(PageRequest pageRequest) {
         Page<Product> list = repository.findAll(pageRequest);
 
-        return list.map(c -> new ProductDto(c, c.getCategories()));
+        return list.map(c -> new ProductListDto(c));
     }
 
     @Transactional(readOnly = true)
@@ -36,14 +47,11 @@ public class ProductService {
 
     @Transactional
     public ProductDto insert(ProductDto productDto) {
-        var product = Product.builder()
-            .name(productDto.getName())
-            // .createdAt(Instant.now())
-            .build();
+        Product product = new Product();
+        copyDtoToEntity(productDto, product);
 
         Product productSaved = repository.save(product);
-
-        return new ProductDto(productSaved);
+        return new ProductDto(productSaved, productSaved.getCategories());
     }
 
     @Transactional
@@ -52,7 +60,7 @@ public class ProductService {
 
         BeanUtils.copyProperties(productDto, product, "id");
 
-        return new ProductDto(product);
+        return new ProductDto(product, product.getCategories());
     }
 
     public Product getProduct(Long id) {
@@ -64,11 +72,27 @@ public class ProductService {
         try {
             if (repository.existsById(id)) {
                 repository.deleteById(id);
+                return;
             } else {
                 throw new ResourceNotFoundException("Resource not found.");
             }
         } catch (DataIntegrityViolationException e) {
             throw new DataBaseException("Integrity violation.");
+        }
+    }
+
+    private void copyDtoToEntity(ProductDto dto, Product entity) {
+
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setDate(dto.getDate());
+        entity.setImgUrl(dto.getImgUrl());
+        entity.setPrice(dto.getPrice());
+
+        entity.getCategories().clear();
+        for (CategoryDto catDto : dto.getCategories()) {
+            Category category = categoryRepository.getReferenceById(catDto.getId());
+            entity.getCategories().add(category);
         }
     }
 }

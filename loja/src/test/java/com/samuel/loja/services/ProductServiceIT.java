@@ -1,6 +1,7 @@
 package com.samuel.loja.services;
 
 import com.samuel.loja.dto.ProductDto;
+import com.samuel.loja.dto.ProductListDto;
 import com.samuel.loja.repository.ProductRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +40,7 @@ public class ProductServiceIT {
     void findAllPagedShouldReturnPageWhenPage0Size10() {
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        Page<ProductDto> page = productService.findAllPaged(pageRequest);
+        Page<ProductListDto> page = productService.findAllPaged(pageRequest);
 
         assertFalse(page.isEmpty());
         assertEquals(0, page.getNumber());
@@ -51,7 +52,7 @@ public class ProductServiceIT {
     void findAllPagedShouldReturnEmptyPageWhenPageDoesNotExist() {
         PageRequest pageRequest = PageRequest.of(50, 10);
 
-        Page<ProductDto> page = productService.findAllPaged(pageRequest);
+        Page<ProductListDto> page = productService.findAllPaged(pageRequest);
 
         assertTrue(page.isEmpty());
     }
@@ -60,7 +61,7 @@ public class ProductServiceIT {
     void findAllPagedShouldReturnSortedPageWhenSortByName() {
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("name"));
 
-        Page<ProductDto> page = productService.findAllPaged(pageRequest);
+        Page<ProductListDto> page = productService.findAllPaged(pageRequest);
 
         assertFalse(page.isEmpty());
         assertEquals("Macbook Pro", page.getContent().get(0).getName());

@@ -2,6 +2,7 @@ package com.samuel.loja.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samuel.loja.dto.ProductDto;
+import com.samuel.loja.dto.ProductListDto;
 import com.samuel.loja.services.ProductService;
 import com.samuel.loja.services.exceptions.DataBaseException;
 import com.samuel.loja.services.exceptions.ResourceNotFoundException;
@@ -39,7 +40,8 @@ class ProductControllerTest {
     private Long nonExistingID;
     private Long dependentID;
     private ProductDto productDto;
-    private PageImpl<ProductDto> page;
+    private ProductListDto productListDto;
+    private PageImpl<ProductListDto> page;
 
     @BeforeEach
     void setUp() {
@@ -48,7 +50,8 @@ class ProductControllerTest {
         dependentID = 3L;
 
         productDto = Factory.createProductDto();
-        page = new PageImpl<>(List.of(productDto));
+        productListDto = Factory.createProductListDto();
+        page = new PageImpl<>(List.of(productListDto));
 
         when(productService.findAllPaged(any())).thenReturn(page);
 
