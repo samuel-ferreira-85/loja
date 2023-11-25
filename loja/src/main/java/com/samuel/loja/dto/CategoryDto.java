@@ -2,15 +2,13 @@ package com.samuel.loja.dto;
 
 import com.samuel.loja.entities.Category;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
+@ToString
 public class CategoryDto {
        
     private Long id;

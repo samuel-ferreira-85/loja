@@ -11,9 +11,9 @@ import java.time.Instant;
 public class Factory {
 
     public static Product createProduct() {
-        Product product = new Product(1l, "Phone", "bom phone", BigDecimal.valueOf(10.90),
-                "http://img.com.br/img.jpg", Instant.parse("2023-11-02T01:30:00Z"));
-        product.getCategories().add(new Category(1L, "Livros"));
+        Product product = new Product(1L, "PS5 Ultimate", "The new generation PS5 video game", BigDecimal.valueOf(4987.90),
+                "http://img.com.br/ps5.jpg", Instant.parse("2023-12-20T10:00:00Z"));
+        product.getCategories().add(new Category(2L, "Eletronicos"));
         return product;
     }
 

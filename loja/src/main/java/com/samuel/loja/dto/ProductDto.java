@@ -21,16 +21,15 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProductDto {
     private Long id;
-	@NotBlank
-	@Size(min = 5, max = 60, message = "the name field must be between 5 and 60 characters")
+	@NotBlank(message = "Required field")
 	private String name;
-	@NotBlank
+	@NotBlank(message = "Required field")
 	private String description;
-	@Positive
+	@Positive(message = "the price field must be positive")
 	private BigDecimal price;
-	@NotBlank
+	@NotBlank(message = "Required field")
 	private String imgUrl;
-	@FutureOrPresent
+	@FutureOrPresent( message = "the date cannot be in the past")
 	private Instant date;
 	@NotEmpty(message = "Must contain at least one category")
 	private List<CategoryDto> categories = new ArrayList<>();

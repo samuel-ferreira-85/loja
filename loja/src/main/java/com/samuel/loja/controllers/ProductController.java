@@ -30,11 +30,7 @@ public class ProductController {
         @RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-
-
-
         Page<ProductListDto> list = productService.findAllPaged(pageRequest);
-
         return ResponseEntity.ok().body(list);
     }
 
@@ -42,11 +38,10 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> findById(@PathVariable Long id) {
         ProductDto product = productService.findById(id);
-
         return ResponseEntity.ok().body(product);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<ProductDto> insert(@Valid @RequestBody ProductDto productDto) {
         var dto = productService.insert(productDto);
@@ -59,20 +54,18 @@ public class ProductController {
         return ResponseEntity.created(uri).body(dto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> update(@PathVariable Long id, 
-        @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> update(@PathVariable Long id,
+                                             @Valid @RequestBody ProductDto productDto) {
         ProductDto dto = productService.update(id, productDto);
-
         return ResponseEntity.ok().body(dto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
-
         return ResponseEntity.noContent().build();
     }
 }
