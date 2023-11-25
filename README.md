@@ -36,7 +36,7 @@ O objetivo principal é fornecer um exemplo prático e didático de como impleme
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
+git clone https://github.com/samuel-ferreira-85/loja.git
 ```
 
 2. Navegue até o diretório do projeto:
